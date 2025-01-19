@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Email Dashboard</title>
+    <style>
+        body {
+            font-family: "Arial", sans-serif;
+            margin: 0;
+            padding: 0;
+            display: grid;
+            grid-template-rows: auto auto 1fr;
+            grid-template-columns: 1fr 3fr;
+            grid-template-areas: 
+                "sidebar header"
+                "sidebar main"
+                "sidebar footer";
+            height: 100vh;
+            background-color: #ffffff;
+            color: #333;
+        }
+
+        .sidebar {
+            grid-area: sidebar;
+            border-right: 1px solid #ddd;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+
+        .header {
+            grid-area: header;
+            border-bottom: 1px solid #ddd;
+            padding: 10px;
+            text-align: center;
+            font-size: 1.2rem;
+            font-weight: bold;
+        }
+
+        .main {
+            grid-area: main;
+            display: grid;
+            grid-template-rows: 1fr;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+
+        .footer {
+            grid-area: footer;
+            display: flex;
+            gap: 10px;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+
+        .box {
+            border: 1px solid #ddd;
+            padding: 20px;
+            text-align: center;
+            font-size: 0.9rem;
+            border-radius: 5px;
+        }
+
+        .ai {
+            border: 1px solid #f08080;
+            background-color: #ffecec;
+        }
+
+        .sidebar .logo {
+            text-align: center;
+            margin-bottom: 20px;
+            font-weight: bold;
+            font-size: 1.1rem;
+        }
+
+        .sidebar a {
+            display: block;
+            margin: 10px 0;
+            color: #333;
+            text-decoration: none;
+            font-size: 0.9rem;
+        }
+
+        .sidebar a:hover {
+            text-decoration: underline;
+        }
+
+        .button {
+            border: 1px solid #ddd;
+            background-color: #e2f2e3;
+            padding: 10px 20px;
+            text-align: center;
+            cursor: pointer;
+            font-size: 0.9rem;
+            border-radius: 5px;
+        }
+
+        .button:hover {
+            background-color: #d4e8d5;
+        }
+    </style>
+</head>
+<body>
+    <div class="sidebar">
+        <div class="logo">
+            REMAIL.COM
+        </div>
+        <div>
+            <p><strong>Lawrence Javier</strong></p>
+            <p>gmail: ljaviermi…</p>
+            <p>outlook: ljavier…</p>
+            <p>outlook: lawr…</p>
+        </div>
+        <nav>
+            <a href="#">Correos</a>
+            <a href="#">CRM</a>
+            <a href="#">Nuevo correo</a>
+            <a href="#">Carpetas</a>
+            <a href="#">Planes</a>
+            <a href="#">Configuración</a>
+        </nav>
+    </div>
+    <div class="header">
+        RESUMEN DE LOS CORREOS
+    </div>
+    <div class="main">
+        <div class="box">Unread</div>
+        <div class="box">Read</div>
+        <div class="box ai">Answer Later</div>
+        <div class="box ai">Waiting for Response</div>
+    </div>
+    <div class="footer">
+        <div class="button">Informe de cliente</div>
+        <div class="button">Contrato de …</div>
+        <div class="button">Inversiones de …</div>
+    </div>
+</body>
+</html>

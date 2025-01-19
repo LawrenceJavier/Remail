@@ -1,0 +1,507 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Email Dashboard</title>
+    <!-- Favicon de la página -->
+    <link rel="icon" href="static/logo.png" type="image/png">
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            font-size: 0.8rem;
+            margin: 0;
+            padding: 0;
+            display: grid;
+            grid-template-rows: auto 1fr auto; /* Fijamos el orden del contenido */
+            grid-template-columns: 200px 1fr; /* Sidebar con ancho fijo de 200px */
+            grid-template-areas: 
+                "sidebar main";
+            height: 100vh;
+            background-color: #ffffff;
+            color: #333;
+            overflow: hidden;
+            overflow-y: auto; /* Si excede, aparecerá scroll */
+        }
+
+        .sidebar {
+            position: fixed;
+            grid-area: sidebar;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            border-right: 1px solid #ddd;
+            padding: 20px;
+            box-sizing: border-box;
+            width: 200px;
+            background-color: #fafafa;
+            height: 100vh;
+        }
+
+        .main {
+            grid-area: main;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            padding: 20px;
+            box-sizing: border-box;
+            height: 100%;
+        }
+
+        .box {
+            border: 1px solid #ddd;
+            padding: 20px;
+            margin-top: 2%;
+            text-align: left;
+            border-radius: 5px;
+        }
+
+        .report {
+            height: 115px;
+            border: 1px solid #74747480;
+            background-color: #fafafa;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            padding-left: 2%;
+        }
+
+        .kanban-container {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr); /* Cuatro columnas iguales */
+            gap: 20px;
+        }
+
+        .kanban-box {
+            display: flex;
+            flex-direction: column;
+            min-height: 100px; /* Altura mínima */
+            max-height: 400px; /* Altura máxima */
+            overflow-y: auto; /* Si excede, aparecerá scroll */
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            padding: 15px;
+        }
+
+        .kanban-email {
+            display: flex;
+            flex-direction: column;
+            max-height: 400px; /* Altura máxima */
+            padding: 15px;
+        }
+
+        .kanban-box p {
+            margin-bottom: 10px; /* Separación entre el título y el contenido */
+            padding-left: 20px;
+            font-weight: bold;
+            text-align: left; /* Alineación a la izquierda para el título */
+        }
+
+        .email-row {
+            display: flex; /* Alinea el texto y los botones en fila */
+            justify-content: space-between; /* Texto a la izquierda, botones a la derecha */
+            align-items: center; /* Alinea verticalmente el contenido */
+            gap: 15px; /* Espacio entre texto y botones */
+            border: 1px solid #ddd; /* Borde para cada fila */
+            padding: 15px;
+            border-radius: 5px;
+            margin-bottom: 10px; /* Espacio entre correos */
+            background-color: #fff;
+        }
+
+        .email-row:hover {
+            background-color: #f5f5f5;
+            transition: background-color 0.3s ease;
+        }
+
+        .full-width-box {
+            height: 250px; /* Ajustar altura según sea necesario */
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            padding: 20px;
+        }
+
+        .button {
+            display: inline-block;
+            padding: 15px 30px;
+            background-color: #1b5e20;
+            color: white;
+            font-size: 1em;
+            text-decoration: none;
+            border-radius: 5px;
+            transition: all 0.3s ease;
+            font-weight: bold;
+        }
+
+        .button:hover {
+            background-color: #ff9800;
+            transform: scale(1.05);
+        }
+
+        .toggle-button {
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            padding: 10px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-bottom: 10px;
+            transition: background-color 0.3s ease;
+        }
+
+        .toggle-button:hover {
+            background-color: #0056b3;
+        }
+
+        /* .box {
+            flex: 1; /* El texto ocupa el máximo espacio disponible 
+            display: flex;
+            flex-direction: column; Texto en formato vertical 
+        } */
+
+        .circle-container {
+            display: flex; /* Usamos flexbox */
+            flex-direction: column; /* Alineamos los botones verticalmente */
+            gap: 6px; /* Espaciado entre los botones */
+            justify-content: center; /* Centrar verticalmente los botones */
+            align-items: center; /* Centrar horizontalmente los botones */
+        }
+
+        /* Estilo general para los círculos */
+        .circle {
+            width: 14px;
+            height: 14px;
+            border-radius: 50%;
+            cursor: pointer; /* Indica que son interactivos */
+            transition: transform 0.2s ease-in-out, background-color 0.2s;
+        }
+        /* Efectos generales al pasar el cursor */
+        .circle:hover {
+            transform: scale(1.1); /* Aumenta ligeramente el tamaño */
+        }
+
+        /* Círculo de Responder */
+        .circle-reply {
+            border: 1px solid #10d316;
+        }
+
+        .circle-reply:hover {
+            background-color: #10d316;
+        }
+
+        /* Círculo de Reenviar */
+        .circle-forward {
+            border: 1px solid #008cff; /* Azul */
+        }
+        .circle-forward:hover {
+            background-color: #008cff; /* Azul */
+        }
+
+        /* Círculo de Eliminar */
+        .circle-delete {
+            border: 1px solid #ff1100; /* Rojo */
+        }
+        .circle-delete:hover {
+            background-color: #ff1100; /* Rojo */
+        }
+
+        .status-round {
+            display: inline-block;
+            padding: 2px 7px;
+            border: 1px solid #ff9800;
+            color: rgb(0, 0, 0);
+            border-radius: 25px;
+            font-size: 1rem;
+            font-weight: bold;
+            text-align: center;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        .add-status-circle {
+            border: 2px solid rgb(255, 136, 0);  /* Borde naranja */
+            background: none;  /* Fondo transparente */
+            color: rgb(255, 136, 0);  /* Color de texto naranja */
+            cursor: pointer;
+            font-weight: bold;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;  /* Hacer el botón circular */
+            display: inline-flex;
+            justify-content: center;
+            align-items: center;
+            padding: 0;
+            line-height: 1;
+            transition: all 0.3s ease;  /* Transición suave */
+        }
+
+        /* Efecto hover */
+        .add-status-circle:hover {
+            background-color: rgb(255, 136, 0);  /* Fondo naranja */
+            color: white;  /* Color de texto blanco */
+            border-color: rgb(255, 136, 0);  /* Mantener el borde naranja */
+            transform: scale(1.1);  /* Opción de hacer un pequeño zoom */
+        }
+
+
+        .dragging {
+            opacity: 0.5;
+            border: 2px dashed #007bff;
+        }
+
+        .dragover {
+            background-color: #f0f8ff;
+            border: 2px dashed #007bff;
+        }
+
+    </style>
+</head>
+<body>
+    {% set status_list = user['status'].replace(']', '').replace('[', '').split(',') %}
+
+    <div class="sidebar">
+        <div>
+            <div class="logo">
+                <img src="static/logo.png" alt="Logo" style="max-height: 100px;">
+            </div>
+            <p><strong>{{ user['username'] }}</strong></p>
+            <p>All emails </p>
+            <p>New emails </p>
+            <p>Read emails </p>
+            {% for stat in status_list %}
+            <p>{{stat}}</p>
+            {% endfor %}<br>
+            <p><strong>Threads</strong></p>
+            <p><strong>Folders</strong></p>
+
+        </div>
+        <div class="logout">
+            <a href="/logout" class="button">Cerrar Sesión</a>
+        </div>
+    </div>
+    <div class="main">
+        <!-- Report -->
+        <div class="report">
+                <h2>{{ user['username'] }}</h2>
+                <p>Email: {{ user['email'] }}</p>
+                <p>Remail ID: {{ user['remail_id'] }}</p>          
+        </div>
+        
+        <!-- Status -->
+        <diV style="padding-left:1%">
+            <p><strong>Add new status
+                <button id="add-status-button" class="add-status-circle" >+</button>
+                </strong>
+            </p>
+            <div>
+                {% for stat in status_list %}
+                    <span class="status-round">{{ stat | trim }}</span>
+                {% endfor %}
+            </div>
+        </div>  
+        
+        <!-- Kanban Section -->
+        <div class="kanban-container">
+            
+            <div class="kanban-box" id="newemail">
+                <p>New email</p>
+                <hr width="90%" size="1">
+                <div class="kanban-email">
+                    {% for email in emails if email['Estado'] == 'newemail'%}
+                        <div class="email-row" id="{{ email['Msg_ID'] }}" draggable="true" data-msg-id="{{ email['Msg_ID'] }}" onclick="openEmail(this)">
+                            <div>
+                                <strong style="font-size: 1.2rem; font-weight: bold;">{{ email['De (Nombre)'] }}</strong><br>
+                                <strong>{{ email['Asunto'] }}</strong>
+                            </div>
+                            <div class="circle-container">
+                                <div class="circle circle-reply" title="Open email"></div>
+                                <div class="circle circle-forward" title="Chand status"></div>
+                                <div class="circle circle-delete" title="Other"></div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <div class="kanban-box" id="reademails">
+                <p>Read Emails</p>
+                <hr width="90%" size="1">
+                <div class="kanban-email">
+                    {% for email in emails if email['Estado'] == 'reademails'%}
+                        <div class="email-row" id="{{ email['Msg_ID'] }}" draggable="true">
+                            <div>
+                                <strong style="font-size: 1.2rem; font-weight: bold;">{{ email['De (Nombre)'] }}</strong><br>
+                                <strong>{{ email['Asunto'] }}</strong>
+                            </div>
+                            <div class="circle-container">
+                                <div class="circle circle-reply" title="Open email"></div>
+                                <div class="circle circle-forward" title="Chand status"></div>
+                                <div class="circle circle-delete" title="Other"></div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+
+            {% set status_list = user['status'].replace(']', '').replace('[', '').split(',') %}
+            {% for stat in status_list %}
+            <div class="kanban-box">
+                <p>{{stat}}</p>
+                <hr width="90%" size="1">
+                <div class="kanban-email">
+                    {% for email in emails if email['Estado'] == stat | lower | replace(' ', '') %}
+                        <div class="email-row" id="{{ email['Msg_ID'] }}" draggable="true">
+                            <div>
+                                <strong style="font-size: 1.2rem; font-weight: bold;">{{ email['De (Nombre)'] }}</strong><br>
+                                <strong>{{ email['Asunto'] }}</strong>
+                            </div>
+                            <div class="circle-container">
+                                <div class="circle circle-reply" title="Open email"></div>
+                                <div class="circle circle-forward" title="Change status"></div>
+                                <div class="circle circle-delete" title="Other"></div>
+                            </div>
+                        </div>
+                    {% endfor %}
+
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+
+        <!-- Full-width Section -->
+        <div class="full-width-box">
+            <p>This section occupies the full width, and can be used for anything else.</p>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const emailRows = document.querySelectorAll('.email-row');
+            const kanbanColumns = document.querySelectorAll('.kanban-email');
+
+            emailRows.forEach(row => {
+                row.addEventListener('dragstart', (e) => {
+                    e.dataTransfer.setData('text/plain', e.target.id); // ID del correo
+                    e.target.classList.add('dragging');
+                });
+
+                row.addEventListener('dragend', (e) => {
+                    e.target.classList.remove('dragging');
+                });
+            });
+
+            kanbanColumns.forEach(column => {
+                column.addEventListener('dragover', (e) => {
+                    e.preventDefault(); // Permite soltar
+                    column.classList.add('dragover');
+                });
+
+                column.addEventListener('dragleave', () => {
+                    column.classList.remove('dragover');
+                });
+
+                column.addEventListener('drop', async (e) => {
+                    e.preventDefault();
+                    const draggedId = e.dataTransfer.getData('text/plain'); // ID del correo arrastrado
+                    const draggedElement = document.getElementById(draggedId);
+                    const newStatus = column.parentNode.querySelector('p').innerText.toLowerCase().replace(/\s+/g, ''); // Toma el título del kanban
+
+                    if (draggedElement) {
+                        column.appendChild(draggedElement);
+                        column.classList.remove('dragover');
+
+                        // Enviar datos al servidor para actualizar el Excel
+                        try {
+                            const response = await fetch('/update_email_status', {
+                                method: 'POST',
+                                headers: {
+                                    'Content-Type': 'application/json',
+                                },
+                                body: JSON.stringify({
+                                    email_id: draggedId, // ID del correo
+                                    new_status: newStatus, // Nuevo estado
+                                }),
+                            });
+
+                            if (response.ok) {
+                                console.log(`Estado actualizado a "${newStatus}" para el correo con ID ${draggedId}`);
+                            } else {
+                                console.error('Error al actualizar el estado');
+                            }
+                        } catch (error) {
+                            console.error('Error en la solicitud:', error);
+                        }
+                    }
+                });
+            });
+        });
+
+        document.getElementById('add-status-button').addEventListener('click', () => {
+            const newStatus = prompt('Enter the name of the new status:');
+            
+            if (newStatus) {
+                fetch('/add_status', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ status: newStatus }),
+                })
+                .then(response => response.json()) // Convertir la respuesta a JSON
+                .then(data => {
+                    if (response.ok) {
+                        // Actualizar dinámicamente el HTML
+                        const kanbanContainer = document.querySelector('.kanban-container');
+                        
+                        // Crear una nueva columna para el estado
+                        const newKanbanBox = document.createElement('div');
+                        newKanbanBox.classList.add('kanban-box');
+                        newKanbanBox.innerHTML = `
+                            <p>${newStatus}</p>
+                            <hr width="90%" size="1">
+                            <div class="kanban-email"></div>
+                        `;
+                        
+                        // Agregar la nueva columna al contenedor de Kanban
+                        kanbanContainer.appendChild(newKanbanBox);
+                        alert('New status added successfully!');
+                    } else {
+                        alert('Failed to add new status.');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('An error occurred while adding the new status.');
+                });
+            }
+        });
+
+        function openEmail(element, emails){
+            console.log(element.dataset.msgId);
+            // Obtener el Msg_ID desde el data-attribute
+            const msgId = element.dataset.msgId;
+
+            // Busca el correo en la lista de emails usando el Msg_ID
+            console.log(emails);
+            const email = emails.find(email => email['Msg_ID'] === msgId);
+            
+            if (email) {
+                // Aquí puedes trabajar con el correo
+                console.log('Email encontrado:', email);
+            } else {
+                console.log('Correo no encontrado');
+            }
+        }
+
+        function closeModal() {
+            const modal = document.querySelector('div[style*="position: fixed"]');
+            if (modal) {
+                modal.remove();
+            }
+        }
+
+
+    </script>
+    
+    
+
+</body>
+</html>
