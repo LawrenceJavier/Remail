@@ -306,7 +306,7 @@
                 <hr width="90%" size="1">
                 <div class="kanban-email">
                     {% for email in emails if email['Estado'] == 'newemail'%}
-                        <div class="email-row" id="{{ email['Msg_ID'] }}" draggable="true" data-msg-id="{{ email['Msg_ID'] }}" onclick="openEmail(this)">
+                        <div class="email-row" id="{{ email['Msg_ID']  | safe  }}" data-email="{{ email }}" draggable="true" onclick="openEmail(this)">
                             <div>
                                 <strong style="font-size: 1.2rem; font-weight: bold;">{{ email['De (Nombre)'] }}</strong><br>
                                 <strong>{{ email['Asunto'] }}</strong>
@@ -326,7 +326,7 @@
                 <hr width="90%" size="1">
                 <div class="kanban-email">
                     {% for email in emails if email['Estado'] == 'reademails'%}
-                        <div class="email-row" id="{{ email['Msg_ID'] }}" draggable="true">
+                        <div class="email-row" id="{{ email['Msg_ID']  | safe  }}" data-email="{{ email }}" draggable="true" onclick="openEmail(this)">
                             <div>
                                 <strong style="font-size: 1.2rem; font-weight: bold;">{{ email['De (Nombre)'] }}</strong><br>
                                 <strong>{{ email['Asunto'] }}</strong>
@@ -348,7 +348,7 @@
                 <hr width="90%" size="1">
                 <div class="kanban-email">
                     {% for email in emails if email['Estado'] == stat | lower | replace(' ', '') %}
-                        <div class="email-row" id="{{ email['Msg_ID'] }}" draggable="true">
+                    <div class="email-row" id="{{ email['Msg_ID']  | safe  }}" data-email="{{ email }}" draggable="true" onclick="openEmail(this)">
                             <div>
                                 <strong style="font-size: 1.2rem; font-weight: bold;">{{ email['De (Nombre)'] }}</strong><br>
                                 <strong>{{ email['Asunto'] }}</strong>
@@ -474,21 +474,8 @@
             }
         });
 
-        function openEmail(element, emails){
-            console.log(element.dataset.msgId);
-            // Obtener el Msg_ID desde el data-attribute
-            const msgId = element.dataset.msgId;
-
-            // Busca el correo en la lista de emails usando el Msg_ID
-            console.log(emails);
-            const email = emails.find(email => email['Msg_ID'] === msgId);
-            
-            if (email) {
-                // Aquí puedes trabajar con el correo
-                console.log('Email encontrado:', email);
-            } else {
-                console.log('Correo no encontrado');
-            }
+        function openEmail(element){
+            console.log(element);
         }
 
         function closeModal() {

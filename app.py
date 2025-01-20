@@ -167,7 +167,6 @@ def add_status():
         print('Error:', e)
         return jsonify({'error': 'An error occurred while updating the Excel file.'}), 500
 
-
 @app.route('/logout')
 def logout():
     session.pop('user', None)
